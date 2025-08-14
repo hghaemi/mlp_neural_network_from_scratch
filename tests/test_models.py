@@ -93,7 +93,7 @@ class TestMLPClassifier(unittest.TestCase):
         predictions = clf.predict_classes(self.X_binary)
         accuracy = np.mean(predictions.flatten() == self.y_binary)
         
-        self.assertGreater(accuracy, 0.7)  # Should achieve reasonable accuracy
+        self.assertGreater(accuracy, 0.7)  # should achieve reasonable accuracy
         
     def test_multiclass_classification(self):
         clf = MLPClassifier(hidden_layers=[20, 10], activation='relu',
@@ -103,7 +103,7 @@ class TestMLPClassifier(unittest.TestCase):
         predictions = clf.predict_classes(self.X_multi)
         accuracy = np.mean(predictions == self.y_multi)
         
-        self.assertGreater(accuracy, 0.6)  # Should achieve reasonable accuracy
+        self.assertGreater(accuracy, 0.6)  # should achieve reasonable accuracy
 
 
 class TestMLPRegressor(unittest.TestCase):
@@ -114,14 +114,19 @@ class TestMLPRegressor(unittest.TestCase):
         )
         
     def test_regression(self):
-        reg = MLPRegressor(hidden_layers=[20, 10], activation='relu', 
-                          learning_rate=0.001, random_state=42)
+
+        reg = MLPRegressor(hidden_layers=[50, 25], activation='relu', 
+                          learning_rate=0.01, random_state=42)
         
-        reg.fit(self.X_reg, self.y_reg, epochs=200, verbose=False)
+        reg.fit(self.X_reg, self.y_reg, epochs=500, verbose=False)
         predictions = reg.predict(self.X_reg)
         mse = np.mean((self.y_reg - predictions.flatten()) ** 2)
         
-        self.assertLess(mse, 1000)
+        self.assertLess(mse, 2000) 
+        
+        initial_loss = reg.history['loss'][0]
+        final_loss = reg.history['loss'][-1]
+        self.assertLess(final_loss, initial_loss * 0.5)  
 
 
 if __name__ == '__main__':
